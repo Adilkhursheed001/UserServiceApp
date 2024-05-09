@@ -24,7 +24,7 @@ import java.util.*;
 public class UserService {
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+   // private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
@@ -37,7 +37,7 @@ public class UserService {
     public Userdto signup(String email, String password){
      Usermodel user = new Usermodel();
      user.setEmailID(email);
-     user.setPassword(bCryptPasswordEncoder.encode(password));
+   //  user.setPassword(bCryptPasswordEncoder.encode(password));
      userRepository.save(user);
 
      Userdto savedUser = user.from(user);
@@ -53,9 +53,9 @@ public class UserService {
         }
         Usermodel usermodel = user.get();
         //Validation
-        if(!bCryptPasswordEncoder.matches(password,usermodel.getPassword())){
-            return null;
-        }
+//        if(!bCryptPasswordEncoder.matches(password,usermodel.getPassword())){
+//            return null;
+//        }
 
 //        String token = RandomStringUtils.randomAlphabetic(30);
 //        String message = "{\n" +
