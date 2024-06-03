@@ -1,19 +1,19 @@
 package com.example.UserServiceApp.repository;
 
-import com.example.UserServiceApp.model.Usermodel;
+import com.example.UserServiceApp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<Usermodel,Long> {
+public interface UserRepository extends JpaRepository<User,Long> {
 
     @Override
-    Usermodel save(Usermodel user);
+    User save(User user);
 
     @Override
-    Optional<Usermodel> findById(Long id);
+    Optional<User> findById(Long id);
 
-    Optional<Usermodel> findByEmailID(String emailID);
+    Optional<User> findByEmailID(String emailID);
 }

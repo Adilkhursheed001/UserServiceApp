@@ -3,17 +3,15 @@ package com.example.UserServiceApp.Service;
 import com.example.UserServiceApp.dtos.Userdto;
 import com.example.UserServiceApp.model.Session;
 import com.example.UserServiceApp.model.SessionStatus;
-import com.example.UserServiceApp.model.Usermodel;
+import com.example.UserServiceApp.model.User;
 import com.example.UserServiceApp.repository.SessionRepository;
 import com.example.UserServiceApp.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.MacAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMapAdapter;
 
@@ -23,8 +21,6 @@ import java.util.*;
 @Service
 public class UserService {
 
-    @Autowired
-   // private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
@@ -35,9 +31,8 @@ public class UserService {
     }
 
     public Userdto signup(String email, String password){
-     Usermodel user = new Usermodel();
+     User user = new User();
      user.setEmailID(email);
-   //  user.setPassword(bCryptPasswordEncoder.encode(password));
      userRepository.save(user);
 
      Userdto savedUser = user.from(user);
@@ -46,12 +41,12 @@ public class UserService {
 
     public ResponseEntity<Userdto> login(String emailId, String password){
 
-        Optional<Usermodel> user = userRepository.findByEmailID(emailId);
+        Optional<User> user = userRepository.findByEmailID(emailId);
 
         if(user.isEmpty()){
             return null;
         }
-        Usermodel usermodel = user.get();
+        User usermodel = user.get();
         //Validation
 //        if(!bCryptPasswordEncoder.matches(password,usermodel.getPassword())){
 //            return null;
@@ -74,7 +69,7 @@ public class UserService {
         JasonForJwt.put("created_at",new Date());
 
          // Making Signature
-        MacAlgorithm algo = Jwts.SIG.HS256;
+        io.jsonwebtoken.security.MacAlgorithm algo = Jwts.SIG.HS256;
         SecretKey key = algo.key().build();
 
          String token = Jwts.builder().claims(JasonForJwt).signWith(key).compact();
