@@ -26,9 +26,9 @@ public class AuthController {
 
 
     @PostMapping("/signUp")
-    public Userdto SignUp(@RequestBody signUprequestDto requestDto){
+    public ResponseEntity<Userdto>  SignUp(@RequestBody signUprequestDto requestDto){
         Userdto userdto = userService.signup(requestDto.getEmailID(),requestDto.getPassword());
-        return  userdto;
+        return  ResponseEntity.ok(userdto);
     }
 
     @PostMapping("/login")
