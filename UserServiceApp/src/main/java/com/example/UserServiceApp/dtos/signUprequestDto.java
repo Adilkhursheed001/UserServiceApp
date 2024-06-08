@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class signUprequestDto {
 
-    private String name;
     private String emailID;
     private String password;
 }

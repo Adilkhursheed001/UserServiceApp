@@ -9,9 +9,11 @@ import com.example.UserServiceApp.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.MacAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMapAdapter;
 
@@ -25,6 +27,9 @@ public class UserService {
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
 
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
     public UserService(UserRepository userRepository,SessionRepository sessionRepository) {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
@@ -33,6 +38,7 @@ public class UserService {
     public Userdto signup(String email, String password){
      User user = new User();
      user.setEmailID(email);
+     user.setPassword(bCryptPasswordEncoder.encode(password));
      userRepository.save(user);
 
      Userdto savedUser = user.from(user);
@@ -62,26 +68,26 @@ public class UserService {
 //        "   \"expirationDate\": \"23rdOctober2023\"\n" +
 //        "}";
 //         byte[] content = message.getBytes(StandardCharsets.UTF_8);
-
-        Map<String,Object> JasonForJwt = new HashMap<>();
-        JasonForJwt.put("email",usermodel.getEmailID());
-        JasonForJwt.put("expiration_date",new Date());
-        JasonForJwt.put("created_at",new Date());
-
-         // Making Signature
-        io.jsonwebtoken.security.MacAlgorithm algo = Jwts.SIG.HS256;
-        SecretKey key = algo.key().build();
-
-         String token = Jwts.builder().claims(JasonForJwt).signWith(key).compact();
-
-        Session session = new Session();
-        session.setToken(token);
-        session.setSessionStatus(SessionStatus.ACTIVE);
-        session.setUsermodel(usermodel);
-        sessionRepository.save(session);
+//
+//        Map<String,Object> JasonForJwt = new HashMap<>();
+//        JasonForJwt.put("email",usermodel.getEmailID());
+//        JasonForJwt.put("expiration_date",new Date());
+//        JasonForJwt.put("created_at",new Date());
+//
+//         // Making Signature
+//        io.jsonwebtoken.security.MacAlgorithm algo = Jwts.SIG.HS256;
+//        SecretKey key = algo.key().build();
+//
+//         String token = Jwts.builder().claims(JasonForJwt).signWith(key).compact();
+//
+//        Session session = new Session();
+//        session.setToken(token);
+//        session.setSessionStatus(SessionStatus.ACTIVE);
+//        session.setUsermodel(usermodel);
+//        sessionRepository.save(session);
 
         MultiValueMapAdapter<String,String> header = new MultiValueMapAdapter<>(new HashMap<>());
-        header.add(HttpHeaders.SET_COOKIE,"auth_token" + token);
+        header.add(HttpHeaders.SET_COOKIE,"auth_token" );
 
         Userdto userdto = usermodel.from(usermodel);
         ResponseEntity<Userdto> response = new ResponseEntity<>(userdto,header, HttpStatus.OK);

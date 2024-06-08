@@ -38,7 +38,7 @@ import java.util.UUID;
         BCryptPasswordEncoder bCryptPasswordEncoder;
 
         @Bean
-        @Order
+        @Order(1)
         public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
                 throws Exception {
             OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
@@ -61,16 +61,18 @@ import java.util.UUID;
         }
 
         @Bean
-        @Order
+        @Order(2)
         public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
                 throws Exception {
             http
+                    .csrf().disable()
                     .authorizeHttpRequests((authorize) -> authorize
-                            .anyRequest().permitAll()
+                            .requestMatchers("/auth/signUp").permitAll()
+                            .anyRequest().authenticated()
                     )
                     // Form login handles the redirect to the login page from the
                     // authorization server filter chain
-                    .formLogin(Customizer.withDefaults());
+                   .formLogin(Customizer.withDefaults());
 
             return http.build();
         }
@@ -94,8 +96,9 @@ import java.util.UUID;
 //                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 //                    .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 //                    .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//                    .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
 //                    .redirectUri("http://oauth.pstmn.io/v1/callback")
-//                    .postLogoutRedirectUri("http://127.0.0.1:8080/")
+//                    .postLogoutRedirectUri("http://127.0.0.1:9000/oauth2/token")
 //                    .scope(OidcScopes.OPENID)
 //                    .scope(OidcScopes.PROFILE)
 //                    .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
