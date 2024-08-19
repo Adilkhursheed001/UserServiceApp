@@ -2,6 +2,8 @@ package com.example.UserServiceApp.Service;
 
 //import com.example.UserServiceApp.config.KafkaProducerConfig;
 
+import com.example.UserServiceApp.config.KafkaProducerConfig;
+import com.example.UserServiceApp.dtos.SendEmailDto;
 import com.example.UserServiceApp.dtos.Userdto;
 import com.example.UserServiceApp.model.Session;
 import com.example.UserServiceApp.model.SessionStatus;
@@ -32,7 +34,7 @@ public class UserService {
 
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
-//    private KafkaProducerConfig kafkaProducerConfig;
+   private KafkaProducerConfig kafkaProducerConfig;
     private ObjectMapper objectMapper;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -52,13 +54,13 @@ public class UserService {
      user.setPassword(bCryptPasswordEncoder.encode(password));
      userRepository.save(user);
      Userdto savedUser = user.from(user);
-//     SendEmailDto sendEmailDto = new SendEmailDto();
-//     sendEmailDto.setTo(savedUser.getEmailID());
-//     sendEmailDto.setFrom("www.scaler@077.com");
-//     sendEmailDto.setSubject("New User Sign Up");
-//     sendEmailDto.setBody("Welcome to Scaler , keep learning and exploring , Team Scaler");
-//     kafkaProducerConfig.sendMessage("sendEmail", objectMapper.writeValueAsString(sendEmailDto));
-//     kafkaProducerConfig.sendMessage("singUp",objectMapper.writeValueAsString(savedUser));
+     SendEmailDto sendEmailDto = new SendEmailDto();
+     sendEmailDto.setTo(savedUser.getEmailID());
+     sendEmailDto.setFrom("www.scaler@077.com");
+     sendEmailDto.setSubject("New User Sign Up");
+     sendEmailDto.setBody("Welcome to Scaler , keep learning and exploring , Team Scaler");
+     kafkaProducerConfig.sendMessage("sendEmail", objectMapper.writeValueAsString(sendEmailDto));
+     kafkaProducerConfig.sendMessage("singUp",objectMapper.writeValueAsString(savedUser));
      return savedUser;
     }
 
